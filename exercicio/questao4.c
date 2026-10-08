@@ -13,18 +13,17 @@ int q4(char *strtexto, char *strbusca, int posicoes[30]){
         if (strtexto[i] == strbusca[0]){
             int inicio = i;
             int j = 0;
-            cont = 0; // Zera a contagem para cada nova tentativa
+            cont = 0;
             
-            // Avança no texto e na busca simultaneamente enquanto forem iguais
             while (j < tam2 && strtexto[inicio + j] == strbusca[j]){
                 cont++;
                 j++;
             }
             
             if (cont == tam2){
-                posicoes[index] = inicio + 1;             // Posição inicial (base 1)
+                posicoes[index] = inicio + 1;           
                 index++;
-                posicoes[index] = inicio + tam2;         // Posição final (base 1)
+                posicoes[index] = inicio + tam2;       
                 index++;
                 contagemPalavras++;
             }

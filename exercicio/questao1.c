@@ -82,8 +82,8 @@ int q1(char data[])
     return 1;
 }
 
-int main() {
-    int res = q1("10/9/2014");
-    printf("\n>>> RESPOSTA DA QUESTAO: %d <<<\n", res);
-    return 0;
-}
+// int main() {
+//     int res = q1("10/9/2014");
+//     printf("\n>>> RESPOSTA DA QUESTAO: %d <<<\n", res);
+//     return 0;
+// }    

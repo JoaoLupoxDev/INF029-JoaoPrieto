@@ -1,62 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int q6(int numerobase, int numerobusca){
-    int tambase=10, contbase=0, tambusca=10, contbusca=0;
-    while (numerobase > tambase){
-        tambase *= 10;
-        contbase++;
-    }
-    contbase++;
+#include <stdio.h>
 
-    while (numerobusca > tambusca){
-        tambusca *= 10;
-        contbusca++;
-    }
-    contbusca++;
+int q6(int numerobase, int numerobusca) {
+    if (numerobase < 0){
+        numerobase = -numerobase;
+    } 
+    if (numerobusca < 0){
+        numerobusca = -numerobusca;
+    } 
 
-    int vetorbase[contbase];
-    int div=10, calc, divsec=1;
-    for (int i=contbase-1;i>-1;i--){
-        calc = numerobase % div;
-        calc /= divsec;
-        vetorbase[i] = calc;
-        div *= 10;
-        divsec *= 10;
-    }
+    int multiplicador = 1;
+    int temp = numerobusca;
+    
+    do {
+        multiplicador *= 10;
+        temp /= 10;
+    } while (temp > 0);
 
-    div=10;
-    divsec=1;
+    int qtdOcorrencias = 0;
 
-    int vetorbusca[contbusca];
-    for (int i=contbusca-1;i>-1;i--){
-        calc = numerobusca % div;
-        calc /= divsec;
-        vetorbusca[i] = calc;
-        div *= 10;
-        divsec *= 10;
-    }
+    while (numerobase >= numerobusca) {
 
-    int qtdOcorrencias=0, cont=0, j=0, temp;
-    for (int i=0;i<contbase;i++){
-        if (vetorbase[i] == vetorbusca[0]){
-            temp = i;
-            for (int j=0;vetorbase[i] == vetorbusca[j] && j<contbusca;j++){
-                cont++;
-                i++;
-                if (cont == contbusca){
-                    qtdOcorrencias++;
-                    cont=0;
-                }
-            }
-            i = temp;
+        if (numerobase % multiplicador == numerobusca) {
+            qtdOcorrencias++;
         }
+        numerobase /= 10; 
     }
 
     return qtdOcorrencias;
 }
 
 int main(){
-    int res = q6(3539343, 39);
+    int res = q6(3393939, 39);
     printf(" A quantidade de ocorrencias foi de %d vezes", res);
 }

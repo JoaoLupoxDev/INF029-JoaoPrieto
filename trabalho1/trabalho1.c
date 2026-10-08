@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include "trabalho1.h" 
 #include <stdlib.h>
+#include <string.h>
 
 DataQuebrada quebraData(char data[]);
 
@@ -185,8 +186,6 @@ int q1(char data[])
  */
 DiasMesesAnos q2(char datainicial[], char datafinal[])
 {
-
-    //calcule os dados e armazene nas três variáveis a seguir
     DiasMesesAnos dma;
 
     if (q1(datainicial) == 0){
@@ -196,18 +195,82 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
       dma.retorno = 3;
       return dma;
     }else{
-      //verifique se a data final não é menor que a data inicial
+      int diaI = (datainicial[0] - '0') * 10 + (datainicial[1] - '0');
+      int mesI = (datainicial[3] - '0') * 10 + (datainicial[4] - '0');
+      int anoI = (datainicial[6] - '0') * 1000 + (datainicial[7] - '0') * 100 + (datainicial[8] - '0') * 10 + (datainicial[9] - '0');
+
+      int diaF = (datafinal[0] - '0') * 10 + (datafinal[1] - '0');
+      int mesF = (datafinal[3] - '0') * 10 + (datafinal[4] - '0');
+      int anoF = (datafinal[6] - '0') * 1000 + (datafinal[7] - '0') * 100 + (datafinal[8] - '0') * 10 + (datafinal[9] - '0');
       
-      //calcule a distancia entre as datas
+      int dataI = anoI * 10000 + mesI * 100 + diaI;
+      int dataF = anoF * 10000 + mesF * 100 + diaF;
 
+      if (dataI > dataF) {
+          dma.retorno = 4; 
+          return dma;
+      } 
+      
+      int bissextoF = 0;
+      if ((anoF % 4 == 0 && anoF % 100 != 0) || (anoF % 400 == 0)) {
+        bissextoF = 1;
+      }
 
-      //se tudo der certo
+      int bissextoI = 0;
+      if ((anoI % 4 == 0 && anoI % 100 != 0) || (anoI % 400 == 0)) {
+        bissextoI = 1;
+      }
+
+      int difAno = anoF - anoI;
+      int difMes = mesF - mesI;
+      int difDia = diaF - diaI;
+
+      if (diaI == diaF && mesI == mesF){
+        dma.qtdAnos = difAno;
+        dma.qtdMeses = difMes;
+        dma.qtdDias = difDia;
+      }else{
+        if (difDia < 0) {
+            difMes--;
+            
+            int mesAnterior = mesF - 1;
+            int anoDoMesAnterior = anoF;
+            if (mesAnterior == 0) {
+                mesAnterior = 12;
+                anoDoMesAnterior--;
+            }
+
+            int diasNoMesAnterior;
+            if (mesAnterior == 2) {
+                if ((anoDoMesAnterior % 4 == 0 && anoDoMesAnterior % 100 != 0) || (anoDoMesAnterior % 400 == 0)) {
+                    diasNoMesAnterior = 29;
+                } else {
+                    diasNoMesAnterior = 28;
+                }
+            } else if (mesAnterior == 4 || mesAnterior == 6 || mesAnterior == 9 || mesAnterior == 11) {
+                diasNoMesAnterior = 30;
+            } else {
+                diasNoMesAnterior = 31;
+            }
+
+            difDia += diasNoMesAnterior;
+        }
+
+        if (difMes < 0) {
+            difMes += 12;
+            difAno--;
+        }
+
+        dma.qtdDias = difDia;
+        dma.qtdMeses = difMes;
+        dma.qtdAnos = difAno;
+      }
+
       dma.retorno = 1;
       return dma;
-      
     }
-    
 }
+
 
 /*
  Q3 = encontrar caracter em texto
@@ -221,7 +284,19 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
  */
 int q3(char *texto, char c, int isCaseSensitive)
 {
-    int qtdOcorrencias = -1;
+    int qtdOcorrencias = 0;
+
+    for (int i=0;texto[i] != '\0';i++){
+        if (isCaseSensitive == 1){
+            if (c == texto[i]){
+                qtdOcorrencias++;
+            }
+        }else{
+            if (c == texto[i] || (c-32) == texto[i]){
+                qtdOcorrencias++;
+            }
+        }
+    }
 
     return qtdOcorrencias;
 }
@@ -284,8 +359,15 @@ int q4(char *strtexto, char *strbusca, int posicoes[30]){
 
 int q5(int num)
 {
+    int invertido = 0;
 
-    return num;
+    while (num != 0) {
+        int ultimoDigito = num % 10;
+        invertido = (invertido * 10) + ultimoDigito;
+        num /= 10; 
+    }
+
+    return invertido;
 }
 
 /*
@@ -298,9 +380,32 @@ int q5(int num)
     Quantidade de vezes que número de busca ocorre em número base
  */
 
-int q6(int numerobase, int numerobusca)
-{
-    int qtdOcorrencias;
+int q6(int numerobase, int numerobusca) {
+    if (numerobase < 0){
+        numerobase = -numerobase;
+    } 
+    if (numerobusca < 0){
+        numerobusca = -numerobusca;
+    } 
+
+    int multiplicador = 1;
+    int temp = numerobusca;
+    
+    do {
+        multiplicador *= 10;
+        temp /= 10;
+    } while (temp > 0);
+
+    int qtdOcorrencias = 0;
+
+    while (numerobase >= numerobusca) {
+
+        if (numerobase % multiplicador == numerobusca) {
+            qtdOcorrencias++;
+        }
+        numerobase /= 10; 
+    }
+
     return qtdOcorrencias;
 }
 
