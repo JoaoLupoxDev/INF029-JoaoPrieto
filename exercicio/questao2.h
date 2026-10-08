@@ -1,11 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include "questao1.h"
+#ifndef QUESTAO2_H
+#define QUESTAO2_H
 
-typedef struct{
-    int dias;
-    int meses;
-    int anos;
+typedef struct {
     int retorno;
-}DiasMesesAnos;
+    int qtdDias;   // ou int dias; conforme definido por você
+    int qtdMeses;  // ou int meses;
+    int qtdAnos;   // ou int anos;
+} DiasMesesAnos;
+
+DiasMesesAnos q2(char datainicial[], char datafinal[]);
+
+#endif

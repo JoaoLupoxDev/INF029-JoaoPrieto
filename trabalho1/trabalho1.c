@@ -241,11 +241,35 @@ int q3(char *texto, char c, int isCaseSensitive)
         O retorno da função, n, nesse caso seria 1;
 
  */
-int q4(char *strTexto, char *strBusca, int posicoes[30])
-{
-    int qtdOcorrencias = -1;
+int q4(char *strtexto, char *strbusca, int posicoes[30]){
+    int tam1 = strlen(strtexto);
+    int tam2 = strlen(strbusca);
+    int cont = 0;
+    int index = 0;
+    int contagemPalavras = 0;
 
-    return qtdOcorrencias;
+    for (int i = 0; i < tam1; i++){
+        if (strtexto[i] == strbusca[0]){
+            int inicio = i;
+            int j = 0;
+            cont = 0; // Zera a contagem para cada nova tentativa
+            
+            // Avança no texto e na busca simultaneamente enquanto forem iguais
+            while (j < tam2 && strtexto[inicio + j] == strbusca[j]){
+                cont++;
+                j++;
+            }
+            
+            if (cont == tam2){
+                posicoes[index] = inicio + 1;             // Posição inicial (base 1)
+                index++;
+                posicoes[index] = inicio + tam2;         // Posição final (base 1)
+                index++;
+                contagemPalavras++;
+            }
+        }
+    }
+    return contagemPalavras;
 }
 
 /*
