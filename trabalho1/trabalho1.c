@@ -195,14 +195,24 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
       dma.retorno = 3;
       return dma;
     }else{
-      int diaI = (datainicial[0] - '0') * 10 + (datainicial[1] - '0');
-      int mesI = (datainicial[3] - '0') * 10 + (datainicial[4] - '0');
-      int anoI = (datainicial[6] - '0') * 1000 + (datainicial[7] - '0') * 100 + (datainicial[8] - '0') * 10 + (datainicial[9] - '0');
+      DataQuebrada dqI = quebraData(datainicial);
+      DataQuebrada dqF = quebraData(datafinal);
 
-      int diaF = (datafinal[0] - '0') * 10 + (datafinal[1] - '0');
-      int mesF = (datafinal[3] - '0') * 10 + (datafinal[4] - '0');
-      int anoF = (datafinal[6] - '0') * 1000 + (datafinal[7] - '0') * 100 + (datafinal[8] - '0') * 10 + (datafinal[9] - '0');
-      
+      int diaI = dqI.iDia;
+      int mesI = dqI.iMes;
+      int anoI = dqI.iAno;
+
+      int diaF = dqF.iDia;
+      int mesF = dqF.iMes;
+      int anoF = dqF.iAno;
+
+      if (anoI < 100) {
+          anoI = anoI + 2000;
+      }
+      if (anoF < 100) {
+          anoF = anoF + 2000;
+      }
+
       int dataI = anoI * 10000 + mesI * 100 + diaI;
       int dataF = anoF * 10000 + mesF * 100 + diaF;
 
@@ -211,16 +221,6 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
           return dma;
       } 
       
-      int bissextoF = 0;
-      if ((anoF % 4 == 0 && anoF % 100 != 0) || (anoF % 400 == 0)) {
-        bissextoF = 1;
-      }
-
-      int bissextoI = 0;
-      if ((anoI % 4 == 0 && anoI % 100 != 0) || (anoI % 400 == 0)) {
-        bissextoI = 1;
-      }
-
       int difAno = anoF - anoI;
       int difMes = mesF - mesI;
       int difDia = diaF - diaI;
@@ -286,13 +286,13 @@ int q3(char *texto, char c, int isCaseSensitive)
 {
     int qtdOcorrencias = 0;
 
-    for (int i=0;texto[i] != '\0';i++){
+    for (int i = 0; texto[i] != '\0'; i++){
         if (isCaseSensitive == 1){
             if (c == texto[i]){
                 qtdOcorrencias++;
             }
         }else{
-            if (c == texto[i] || (c-32) == texto[i]){
+            if (c == texto[i] || (c - 32) == texto[i] || (c + 32) == texto[i]){
                 qtdOcorrencias++;
             }
         }
@@ -327,18 +327,17 @@ int q4(char *strtexto, char *strbusca, int posicoes[30]){
         if (strtexto[i] == strbusca[0]){
             int inicio = i;
             int j = 0;
-            cont = 0; // Zera a contagem para cada nova tentativa
+            cont = 0;
             
-            // Avança no texto e na busca simultaneamente enquanto forem iguais
             while (j < tam2 && strtexto[inicio + j] == strbusca[j]){
                 cont++;
                 j++;
             }
             
             if (cont == tam2){
-                posicoes[index] = inicio + 1;             // Posição inicial (base 1)
+                posicoes[index] = inicio + 1;
                 index++;
-                posicoes[index] = inicio + tam2;         // Posição final (base 1)
+                posicoes[index] = inicio + tam2;
                 index++;
                 contagemPalavras++;
             }
@@ -419,60 +418,84 @@ int q6(int numerobase, int numerobusca) {
     1 se achou 0 se não achou
  */
 
- int q7(char matriz[8][10], char palavra[5])
- {
-     int achou;
-     return achou;
- }
+int q7(char matriz[8][10], char palavra[5])
+{
+    int i, j, k, dir;
+    int tam = strlen(palavra);
 
+    if (tam == 0) return 1;
 
+    int d_lin[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+    int d_col[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 10; j++) {
+            for (dir = 0; dir < 8; dir++) {
+                int r = i;
+                int c = j;
+
+                for (k = 0; k < tam; k++) {
+                    if (r < 0 || r >= 8 || c < 0 || c >= 10) break;
+                    if (matriz[r][c] != palavra[k]) break;
+
+                    r += d_lin[dir];
+                    c += d_col[dir];
+                }
+
+                if (k == tam) return 1;
+            }
+        }
+    }
+
+    return 0;
+}
 
 DataQuebrada quebraData(char data[]){
   DataQuebrada dq;
   char sDia[3];
-	char sMes[3];
-	char sAno[5];
-	int i; 
+  char sMes[3];
+  char sAno[5];
+  int i; 
 
-	for (i = 0; data[i] != '/'; i++){
-		sDia[i] = data[i];	
-	}
-	if(i == 1 || i == 2){ // testa se tem 1 ou dois digitos
-		sDia[i] = '\0';  // coloca o barra zero no final
-	}else {
-		dq.valido = 0;
+  for (i = 0; data[i] != '/'; i++){
+    sDia[i] = data[i];	
+  }
+  if(i == 1 || i == 2){
+    sDia[i] = '\0';
+  }else {
+    dq.valido = 0;
     return dq;
   }  
 	
 
-	int j = i + 1; //anda 1 cada para pular a barra
-	i = 0;
+  int j = i + 1;
+  i = 0;
 
-	for (; data[j] != '/'; j++){
-		sMes[i] = data[j];
-		i++;
-	}
+  for (; data[j] != '/'; j++){
+    sMes[i] = data[j];
+    i++;
+  }
 
-	if(i == 1 || i == 2){ // testa se tem 1 ou dois digitos
-		sMes[i] = '\0';  // coloca o barra zero no final
-	}else {
-		dq.valido = 0;
+  if(i == 1 || i == 2){
+    sMes[i] = '\0';
+  }else {
+    dq.valido = 0;
     return dq;
   }
 	
 
-	j = j + 1; //anda 1 cada para pular a barra
-	i = 0;
+  j = j + 1;
+  i = 0;
 	
-	for(; data[j] != '\0'; j++){
-	 	sAno[i] = data[j];
-	 	i++;
-	}
+  for(; data[j] != '\0'; j++){
+    sAno[i] = data[j];
+    i++;
+  }
 
-	if(i == 2 || i == 4){ // testa se tem 2 ou 4 digitos
-		sAno[i] = '\0';  // coloca o barra zero no final
-	}else {
-		dq.valido = 0;
+  if(i == 2 || i == 4){
+    sAno[i] = '\0';
+  }else {
+    dq.valido = 0;
     return dq;
   }
 
@@ -480,7 +503,7 @@ DataQuebrada quebraData(char data[]){
   dq.iMes = atoi(sMes);
   dq.iAno = atoi(sAno); 
 
-	dq.valido = 1;
+  dq.valido = 1;
     
   return dq;
 }
