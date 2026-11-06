@@ -168,7 +168,14 @@ int excluirNumeroEspecificoDeEstrutura(int posicao, int valor)
     for (int i=0; i<quant; i++){
         if (vetorPrincipal[posicao-1].vetorauxiliar[i] == valor){
             validador = 1;
+            for (int j=i; j<quant-1; j++){
+                vetorPrincipal[posicao-1].vetorauxiliar[j] = vetorPrincipal[posicao-1].vetorauxiliar[j+1];
+            }
+
+            vetorPrincipal[posicao-1].quantidade--;
+            break;
         }
+        
     }
 
     if (validador == 0){
@@ -207,8 +214,23 @@ Retorno (int)
 int getDadosEstruturaAuxiliar(int posicao, int vetorAux[])
 {
 
-    int retorno = 0;
+    int retorno;
+    
+    if (posicao < 1 || posicao > 10){
+        retorno = POSICAO_INVALIDA;
+        return retorno;
+    }
 
+    if (vetorPrincipal[posicao-1].vetorauxiliar == NULL){
+        retorno = SEM_ESTRUTURA_AUXILIAR;
+        return retorno;
+    }
+
+    for (int i=0; i<vetorPrincipal[posicao-1].quantidade; i++){
+        vetorAux[i] = vetorPrincipal[posicao-1].vetorauxiliar[i];
+    }
+    
+    retorno = SUCESSO;
     return retorno;
 }
 
@@ -223,10 +245,27 @@ Rertono (int)
 */
 int getDadosOrdenadosEstruturaAuxiliar(int posicao, int vetorAux[])
 {
+    int retorno = getDadosEstruturaAuxiliar(posicao, vetorAux);
 
-    int retorno = 0;
+    // Se houve algum erro (posição inválida ou sem estrutura), retorna o erro imediatamente
+    if (retorno != SUCESSO) {
+        return retorno;
+    }
 
-    
+    int quant = vetorPrincipal[posicao - 1].quantidade;
+
+    // Ordenação (Bubble Sort) dos elementos apenas dentro do vetorAux
+    for (int i = 0; i < quant - 1; i++) {
+        for (int j = 0; j < quant - i - 1; j++) {
+            if (vetorAux[j] > vetorAux[j + 1]) {
+                int temp = vetorAux[j];
+                vetorAux[j] = vetorAux[j + 1];
+                vetorAux[j + 1] = temp;
+            }
+        }
+    }
+
+    retorno = SUCESSO;
     return retorno;
 }
 
