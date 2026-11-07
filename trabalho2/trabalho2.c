@@ -19,7 +19,6 @@ Rertono (int)
 */
 int criarEstruturaAuxiliar(int posicao, int tamanho)
 {
-
     int retorno = 0;
     if (posicao < 1 || posicao > 10){
         retorno = POSICAO_INVALIDA;   
@@ -31,7 +30,8 @@ int criarEstruturaAuxiliar(int posicao, int tamanho)
         return retorno;
     }
     
-    if (vetorPrincipal[posicao].vetorauxiliar != NULL){
+    // Corrigido para posicao - 1
+    if (vetorPrincipal[posicao-1].vetorauxiliar != NULL){
         retorno = JA_TEM_ESTRUTURA_AUXILIAR;
         return retorno;
     }
@@ -44,7 +44,6 @@ int criarEstruturaAuxiliar(int posicao, int tamanho)
 
     vetorPrincipal[posicao-1].quantidade = 0;
     vetorPrincipal[posicao-1].tamanho = tamanho;
-    // deu tudo certo, crie
     retorno = SUCESSO;
     return retorno;
 }
@@ -68,12 +67,10 @@ int inserirNumeroEmEstrutura(int posicao, int valor)
     }
     else
     {
-        // testar se existe a estrutura auxiliar
         if (vetorPrincipal[posicao-1].vetorauxiliar != NULL)
         {
             if (vetorPrincipal[posicao-1].quantidade < vetorPrincipal[posicao-1].tamanho)
             {
-                //insere
                 int quant = vetorPrincipal[posicao-1].quantidade;
                 vetorPrincipal[posicao-1].vetorauxiliar[quant] = valor;
                 vetorPrincipal[posicao-1].quantidade++;
@@ -361,7 +358,6 @@ Rertono (int)
 */
 int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho)
 {
-
     int retorno;
 
     if (posicao < 1 || posicao > 10){
@@ -374,11 +370,12 @@ int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho)
 
     int novoTamanhoFinal = vetorPrincipal[posicao-1].tamanho + novoTamanho;
 
-    if (novoTamanhoFinal < 0){
+    // Corrigido para < 1 (o tamanho mínimo é 1)
+    if (novoTamanhoFinal < 1){
         return NOVO_TAMANHO_INVALIDO;
     }
 
-    int *realocar =  (int*) realloc(vetorPrincipal[posicao-1].vetorauxiliar, novoTamanhoFinal * sizeof(int));
+    int *realocar = (int*) realloc(vetorPrincipal[posicao-1].vetorauxiliar, novoTamanhoFinal * sizeof(int));
 
     if (realocar == NULL){
         return SEM_ESPACO_DE_MEMORIA;
